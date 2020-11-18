@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}{% endblock title %}</title>
+  </head>
+
+  <style>
+    /* inline styling in html file coz it will be more faster */
+
+    body {
+      /* background: rgb(241, 241, 241); */
+      background: white;
+    }
+    .container {
+      width: 60%;
+      max-width: 70%;
+      margin: auto;
+    }
+
+    header {
+      width: 100%;
+      /* background: #f4f4f4; */
+      background: rgb(174, 174, 255);
+      margin: 0.2rem auto;
+      height: 5rem;
+    }
+
+    .flex-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 100%;
+    }
+
+    .flex-header h3 {
+      font-weight: bolder;
+      font-size: 1.5rem;
+      font-family: monospace;
+    }
+
+    .flex-header ul {
+      list-style: none;
+      display: flex;
+      align-items: center;
+    }
+
+    .flex-header ul li {
+      margin: 0 0.8rem;
+      font-size: 1rem;
+      font-family: monospace;
+      font-weight: 900;
+    }
+
+    .posts-section {
+      margin-top: 2rem;
+      height: auto;
+    }
+
+    .posts-section form {
+      height: 4rem;
+      display: flex;
+      align-items: center;
+      width: 50%;
+      margin: auto;
+      justify-content: center;
+    }
+
+    .posts-section form textarea {
+      height: 4rem;
+      margin: 0 0.2rem;
+      width: 15rem;
+      outline: none;
+    }
+
+    .posts-section form textarea:focus {
+      border: 0.5px solid rgb(38, 38, 255);
+      outline: 0.5px solid rgb(38, 38, 255);
+    }
+
+    .posts-section form button {
+      padding: 0.5rem;
+      text-align: center;
+      background: rgb(38, 38, 255);
+      border-radius: 6px;
+      margin: 0 0.2rem;
+      outline: none;
+      border: none;
+      color: white;
+    }
+
+    .tweets {
+      margin-top: 2rem;
+    }
+
+    .tweet-ui {
+      background: #f4f4f4;
+      padding: 0.5rem 0.3rem;
+      height: auto;
+      position: relative;
+      margin:0.5rem 0;
+    }
+
+    .tweet-text p {
+      font-weight: 400;
+      color: rgb(80, 80, 80);
+      font-family: Arial, Helvetica, sans-serif;
+      height: auto;
+      font-size: 0.9rem;
+      margin-top: 20px;
+    }
+
+    .tweet-ui button {
+      padding: 0.3rem;
+      border-radius: 3px;
+      outline: none;
+      border: none;
+    }
+
+    .tweet-like button {
+      margin-top: 1rem;
+      background: rgb(38, 38, 255);
+      color: white;
+    }
+
+    .number {
+      margin: 0 0.3rem;
+    }
+
+    .tweet-delete {
+      position: absolute;
+      top: 10px;
+      right: 0.4rem;
+      background: red;
+      border: none;
+      color: whitesmoke;
+    }
+  </style>
+
+  <body>
+    <header>
+      <div class="container flex-header">
+        <h3>Crud Tweet App</h3>
+        <nav>
+          <ul>
+            <li>xhr</li>
+            <li>fetch Api</li>
+            <li>Axios</li>
+            <li>DRF</li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <div class="container posts-section">
+      <form class="tweetForm" method="POST">{% csrf_token %}
+        <textarea
+          name="post"
+          placeholder="tweet something"
+        ></textarea>
+        <button name="submit-tweet">tweet</button>
+      </form>
+
+      <!-- action here is not needed , just need to use the name for the input to the field of the model needed -->
+      <!-- that is <textarea  name="post" since post is the name of the model field needed-->
+
+      <div class="tweets">
+        
+      </div>
+    </div>
+
+    <script>
+      //  starting off with the js codes...
+      // i'm going to use vanilla js for the mean time , and my process involves
+      // building up a markup first with a html snippets/code and manipulate or recreate with js..
+      // offcourse its js recreating html with the advantage of automation and e.t.c...
+
+      // this is a basic crud app and first thing first is the 'R' on crud reading data..
+      // using a GET method ro fetch these data and somehow creates a loop that iterates with the individual datumn
+
+      // <div class="tweets">
+      //     <div class="tweet-ui">
+      //       <div class="tweet-text">
+      //         <p>
+      //           Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum
+      //           animi beatae laudantium corrupti, harum a.
+      //         </p>
+      //       </div>
+      //       <div class="tweet-like">
+      //         <button><span class="number">20</span>Like</button>
+      //     </div>
+      //     <button class='tweet-delete'>delete</button>
+      //     </div>
+      //   </div>
+
+      // recreating the code above will be to create a div and appendChild another div and use the textcontent
+      // or use the innerhtml to write that snippet
+
+      function htmlSnippet(textContent, like){
+        const tweetUi = document.createElement("div");
+        tweetUi.className="tweet-ui"
+
+        const htmlCode = "<div class='tweet-text'>" +
+                          `<p>${textContent}</p>`+
+                          "</div>" +
+                          "<div class='tweet-like'>"+
+                          `<button><span class='number'>${like}</span>Like</button>` +
+                          "</div>"+
+                          "<button class='tweet-delete'>delete</button>"
+
+        tweetUi.innerHTML = htmlCode
+        
+        const tweets = document.querySelector('.tweets');
+        tweets.appendChild(tweetUi)
+      }
+
+      // that's it, what else needs to be done is for me to iterate with the number of occurences 
+      // of post in the DB and with each specifc data using string literals..
+      // looks like JSX in react 'hahaha'.
+
+      // now to start with the API ..
+      // remember for xhr 4 main things are 
+      // 1) open
+      // 2) onload
+      // 3) response
+      // 4) send
+
+      const getMethod = 'GET';
+      const endPoint = 'Api/';
+
+      const xhr = new XMLHttpRequest();
+      
+      // configure xhr by default to JSON or you can parse anytime you want to
+      xhr.responseType = 'json';
+
+      xhr.open(getMethod, endPoint);
+      xhr.onload = () => {
+      // business Logic .
+      console.log(xhr.response.data_list);
+
+      // htmlSnippet('hello world')
+      // const someArray = ['hello world', 'new post', 'something else']
+      // for(let i=0; i<someArray.length; i++){
+      //   htmlSnippet(someArray[i]);
+      // } >>>> Testing the logic of looping over them with a function
+
+      // now since you have the data..
+      // a 'virtual' code way of me bringing it to my screen can be looping over it 
+      // maybe a for loop over xhr.response.data_list, and with string literals changing my elements in the variable up above
+
+      const theData = xhr.response.data_list;
+      for(let i=0; i<theData.length; i++){
+        htmlSnippet(theData[i].post, theData[i].like)
+      }
+      }
+      xhr.send() //remenber to send always 
+
+    //GET METHOD DONE...
+
+    // POST method for tweeting
+    // const postXhr = new XMLHttpRequest()
+    // const tweetForm = document.querySelector('.tweetForm');
+    // const postMethod = 'POST';
+    // const postUrl = tweetForm.getAttribute('action');
+
+    // tweetForm.addEventListener('submit', handleSubmit);
+    // function handleSubmit(e){
+    //   e.preventDefault();
+    //   const formData = new FormData(e.target)
+    //   for(let item of formData.entries()){
+    //     console.log(item)
+    //   }
+    // }
+
+    // postXhr.open(postMethod, postUrl);
+    // postXhr.onload = () => {
+    //   console.log(postXhr.response)
+    // }
+    // postXhr.send(formData)
+
+    </script>
+  </body>
+</html>
