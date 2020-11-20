@@ -1,5 +1,5 @@
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # models 
 from .models import TweetPost
@@ -18,7 +18,7 @@ def home_Api_View(request):
         ]
     '''
     
-    data_list = [{'id': i.id, 'post':i.post, 'like':i.like} for i in posts]
+    data_list = [{'id':i.id, 'post':i.post, 'like':i.like} for i in posts]
     data ={
         'data_list' : data_list
     }
@@ -35,3 +35,15 @@ def home_view(request):
     tweetForm = TweetForm()
     return render(request, 'xhr_APP/home.html', {})
 
+
+def tweet_create_view(request):
+    if(request.method == 'POST'):
+        tweetForm = TweetForm(request.POST or None)
+        if tweetForm.is_valid():
+            tweetForm.save(commit=False)
+            tweetForm.save()
+            if request.is_ajax():
+                return JsonResponse({}, status=201)
+            return redirect('/xhr')
+    tweetForm = TweetForm()
+    return render(request, 'xhr_APP/create_form.html', {"tweetForm":tweetForm})

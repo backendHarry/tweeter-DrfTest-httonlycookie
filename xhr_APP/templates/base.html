@@ -154,7 +154,7 @@
     </header>
 
     <div class="container posts-section">
-      <form class="tweetForm" method="POST">{% csrf_token %}
+      <form class="tweetForm" method="POST" action="create/">{% csrf_token %}
         <textarea
           name="post"
           placeholder="tweet something"
@@ -198,21 +198,16 @@
       // or use the innerhtml to write that snippet
 
       function htmlSnippet(textContent, like){
-        const tweetUi = document.createElement("div");
-        tweetUi.className="tweet-ui"
-
-        const htmlCode = "<div class='tweet-text'>" +
+        const htmlCode =  "<div class='tweet-ui'>"+
+                          "<div class='tweet-text'>" +
                           `<p>${textContent}</p>`+
                           "</div>" +
                           "<div class='tweet-like'>"+
                           `<button><span class='number'>${like}</span>Like</button>` +
                           "</div>"+
-                          "<button class='tweet-delete'>delete</button>"
-
-        tweetUi.innerHTML = htmlCode
-        
-        const tweets = document.querySelector('.tweets');
-        tweets.appendChild(tweetUi)
+                          "<button class='tweet-delete'>delete</button>"+
+                          "</div>";
+        return htmlCode;
       }
 
       // that's it, what else needs to be done is for me to iterate with the number of occurences 
@@ -226,58 +221,54 @@
       // 3) response
       // 4) send
 
-      const getMethod = 'GET';
-      const endPoint = 'Api/';
+    const tweetEl = document.querySelector('.tweets');
 
+    function loadData(){
+      const method ="GET";
+      const url ="Api/";
+      const responseType ='json';
       const xhr = new XMLHttpRequest();
-      
-      // configure xhr by default to JSON or you can parse anytime you want to
-      xhr.responseType = 'json';
-
-      xhr.open(getMethod, endPoint);
-      xhr.onload = () => {
-      // business Logic .
-      console.log(xhr.response.data_list);
-
-      // htmlSnippet('hello world')
-      // const someArray = ['hello world', 'new post', 'something else']
-      // for(let i=0; i<someArray.length; i++){
-      //   htmlSnippet(someArray[i]);
-      // } >>>> Testing the logic of looping over them with a function
-
-      // now since you have the data..
-      // a 'virtual' code way of me bringing it to my screen can be looping over it 
-      // maybe a for loop over xhr.response.data_list, and with string literals changing my elements in the variable up above
-
-      const theData = xhr.response.data_list;
-      for(let i=0; i<theData.length; i++){
-        htmlSnippet(theData[i].post, theData[i].like)
+      xhr.responseType = responseType;
+      xhr.open(method, url);
+      xhr.onload = function (){
+        let data_list = xhr.response.data_list;
+        let finalHtml = '';
+        for(let i=0; i<data_list.length; i++){
+          finalHtml += htmlSnippet(data_list[i].post, data_list[i].like)
+          tweetEl.innerHTML = finalHtml;
+        }
       }
-      }
-      xhr.send() //remenber to send always 
+      xhr.send();
+    }
 
+
+    loadData();
     //GET METHOD DONE...
+    // loadData(); //get method function
 
-    // POST method for tweeting
-    // const postXhr = new XMLHttpRequest()
-    // const tweetForm = document.querySelector('.tweetForm');
-    // const postMethod = 'POST';
-    // const postUrl = tweetForm.getAttribute('action');
+    // POST Method
 
-    // tweetForm.addEventListener('submit', handleSubmit);
-    // function handleSubmit(e){
-    //   e.preventDefault();
-    //   const formData = new FormData(e.target)
-    //   for(let item of formData.entries()){
-    //     console.log(item)
-    //   }
-    // }
+    const tweetForm = document.querySelector('.tweetForm');
+    tweetForm.addEventListener('submit', handleSubmit);
+    function handleSubmit(e){
+      e.preventDefault();
+      const postMethod = e.target.getAttribute('method');
+      const postUrl = e.target.getAttribute('action');
+      const formData = new FormData(e.target);
+      const postXhr = new XMLHttpRequest();
+      postXhr.responseType = 'json';
+      postXhr.open(postMethod, postUrl);
+      postXhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest") //this methods to allow ajax not to cause reload
+      postXhr.setRequestHeader("X-Requested-With", "XMLHttpRequest") //this methods to allow ajax not to cause reload
+      postXhr.onload = function() {
+        console.log(postXhr.response)
+        loadData();
+      }
+      postXhr.send(formData);
+      e.target.reset();
+    }
 
-    // postXhr.open(postMethod, postUrl);
-    // postXhr.onload = () => {
-    //   console.log(postXhr.response)
-    // }
-    // postXhr.send(formData)
+
 
     </script>
   </body>
