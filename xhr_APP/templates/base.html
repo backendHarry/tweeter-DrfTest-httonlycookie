@@ -231,17 +231,17 @@
       xhr.responseType = responseType;
       xhr.open(method, url);
       xhr.onload = function (){
-        let data_list = xhr.response.data_list;
-        let finalHtml = '';
-        for(let i=0; i<data_list.length; i++){
-          finalHtml += htmlSnippet(data_list[i].post, data_list[i].like)
+        let data_list = xhr.response.data_list;   //write the onload function as if you are not expecting to even create 
+        let finalHtml = '';                       //a loop because have it mind that you are as well calling this function  
+        for(let i=0; i<data_list.length; i++){    //again to help reload your data async , so this function will serve
+          finalHtml += htmlSnippet(data_list[i].post, data_list[i].like) //2 purposes , reloading and as well creating a new tweet
           tweetEl.innerHTML = finalHtml;
-        }
-      }
+        }  //the loop handles its own logic of having a tweet and adding to the previous tweets..
+      }   //if you had written this logic in the same function for generating html "htmlSnippet()" it will work for creating a new tweet but wont reload coz it will stay on the stack without being removed , hence it will always think of creating instead of acting as a function that reloads as well.
       xhr.send();
     }
 
-
+    // Justin did a different method over with having to "append to the tweets" which will be faster but i'm doing this coz in react it will be more of state changing and similiar code logic.
     loadData();
     //GET METHOD DONE...
     // loadData(); //get method function
