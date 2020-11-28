@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}{% endblock title %}</title>
+  </head>
+
+  <style>
+    /* inline styling in html file coz it will be more faster */
+
+    body {
+      /* background: rgb(241, 241, 241); */
+      background: white;
+    }
+    .container {
+      width: 60%;
+      max-width: 70%;
+      margin: auto;
+    }
+
+    header {
+      width: 100%;
+      /* background: #f4f4f4; */
+      background: rgb(174, 174, 255);
+      margin: 0.2rem auto;
+      height: 5rem;
+    }
+
+    .flex-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 100%;
+    }
+
+    .flex-header h3 {
+      font-weight: bolder;
+      font-size: 1.5rem;
+      font-family: monospace;
+    }
+
+    .flex-header ul {
+      list-style: none;
+      display: flex;
+      align-items: center;
+    }
+
+    .flex-header ul li {
+      margin: 0 0.8rem;
+      font-size: 1rem;
+      font-family: monospace;
+      font-weight: 900;
+    }
+
+    .posts-section {
+      margin-top: 2rem;
+      height: auto;
+    }
+
+    .posts-section form {
+      height: 4rem;
+      display: flex;
+      align-items: center;
+      width: 50%;
+      margin: auto;
+      justify-content: center;
+    }
+
+    .posts-section form textarea {
+      height: 4rem;
+      margin: 0 0.2rem;
+      width: 15rem;
+      outline: none;
+    }
+
+    .posts-section form textarea:focus {
+      border: 0.5px solid rgb(38, 38, 255);
+      outline: 0.5px solid rgb(38, 38, 255);
+    }
+
+    .posts-section form button {
+      padding: 0.5rem;
+      text-align: center;
+      background: rgb(38, 38, 255);
+      border-radius: 6px;
+      margin: 0 0.2rem;
+      outline: none;
+      border: none;
+      color: white;
+    }
+
+    .tweets {
+      margin-top: 2rem;
+    }
+
+    .tweet-ui {
+      background: #f4f4f4;
+      padding: 0.5rem 0.3rem;
+      height: auto;
+      position: relative;
+      margin:0.5rem 0;
+    }
+
+    .tweet-text p {
+      font-weight: 400;
+      color: rgb(80, 80, 80);
+      font-family: Arial, Helvetica, sans-serif;
+      height: auto;
+      font-size: 0.9rem;
+      margin-top: 20px;
+    }
+
+    .tweet-ui button {
+      padding: 0.3rem;
+      border-radius: 3px;
+      outline: none;
+      border: none;
+    }
+
+    .tweet-like button {
+      margin-top: 1rem;
+      background: rgb(38, 38, 255);
+      color: white;
+    }
+
+    .number {
+      margin: 0 0.3rem;
+    }
+
+    .tweet-delete {
+      position: absolute;
+      top: 10px;
+      right: 0.4rem;
+      background: red;
+      border: none;
+      color: whitesmoke;
+    }
+  </style>
+
+  <body>
+    <header>
+      <div class="container flex-header">
+        <h3>Crud Tweet App</h3>
+        <nav>
+          <ul>
+            <li>xhr</li>
+            <li>fetch Api</li>
+            <li>Axios</li>
+            <li>DRF</li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <div class="container posts-section">
+      <form class="tweetForm" method="POST" action="create/">{% csrf_token %}
+        <textarea
+          name="post"
+          placeholder="tweet something"
+        ></textarea>
+        <button name="submit-tweet">tweet</button>
+      </form>
+
+      <!-- action here is not needed , just need to use the name for the input to the field of the model needed -->
+      <!-- that is <textarea  name="post" since post is the name of the model field needed-->
+
+      <div class="tweets">
+        
+      </div>
+    </div>
+
+    <script>
+      //  starting off with the js codes...
+      // i'm going to use vanilla js for the mean time , and my process involves
+      // building up a markup first with a html snippets/code and manipulate or recreate with js..
+      // offcourse its js recreating html with the advantage of automation and e.t.c...
+
+      // this is a basic crud app and first thing first is the 'R' on crud reading data..
+      // using a GET method ro fetch these data and somehow creates a loop that iterates with the individual datumn
+
+      // <div class="tweets">
+      //     <div class="tweet-ui">
+      //       <div class="tweet-text">
+      //         <p>
+      //           Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum
+      //           animi beatae laudantium corrupti, harum a.
+      //         </p>
+      //       </div>
+      //       <div class="tweet-like">
+      //         <button><span class="number">20</span>Like</button>
+      //     </div>
+      //     <button class='tweet-delete'>delete</button>
+      //     </div>
+      //   </div>
+
+      // recreating the code above will be to create a div and appendChild another div and use the textcontent
+      // or use the innerhtml to write that snippet
+
+      function htmlSnippet(textContent, like){
+        const htmlCode =  "<div class='tweet-ui'>"+
+                          "<div class='tweet-text'>" +
+                          `<p>${textContent}</p>`+
+                          "</div>" +
+                          "<div class='tweet-like'>"+
+                          `<button><span class='number'>${like}</span>Like</button>` +
+                          "</div>"+
+                          "<button class='tweet-delete'>delete</button>"+
+                          "</div>";
+        return htmlCode;
+      }
+
+      // that's it, what else needs to be done is for me to iterate with the number of occurences 
+      // of post in the DB and with each specifc data using string literals..
+      // looks like JSX in react 'hahaha'.
+
+      // now to start with the API ..
+      // remember for xhr 4 main things are 
+      // 1) open
+      // 2) onload
+      // 3) response
+      // 4) send
+
+    var tweetEl = document.querySelector('.tweets');
+
+    function loadData(){
+      const method ="GET";
+      const url ="Api/";
+      const responseType ='json';
+      const xhr = new XMLHttpRequest();
+      xhr.responseType = responseType;
+      xhr.open(method, url);
+      xhr.onload = function (){
+        let data_list = xhr.response.data_list;   //write the onload function as if you are not expecting to even create 
+        let finalHtml = '';                       //a loop because have it mind that you are as well calling this function  
+        for(let i=0; i<data_list.length; i++){    //again to help reload your data async , so this function will serve
+          finalHtml += htmlSnippet(data_list[i].post, data_list[i].like) //2 purposes , reloading and as well creating a new tweet
+          tweetEl.innerHTML = finalHtml;
+        }  //the loop handles its own logic of having a tweet and adding to the previous tweets..
+      }   //if you had written this logic in the same function for generating html "htmlSnippet()" it will work for creating a new tweet but wont reload coz it will stay on the stack without being removed , hence it will always think of creating instead of acting as a function that reloads as well.
+      xhr.send();
+    }
+
+    // Justin did a different method over with having to "append to the tweets" which will be faster but i'm doing this coz in react it will be more of state changing and similiar code logic.
+    loadData();
+    //GET METHOD DONE...
+    // loadData(); //get method function
+
+    // POST Method
+
+    const tweetForm = document.querySelector('.tweetForm');
+    tweetForm.addEventListener('submit', handleSubmit);
+    function handleSubmit(e){
+      e.preventDefault();
+      const postMethod = e.target.getAttribute('method');
+      const postUrl = e.target.getAttribute('action');
+      const formData = new FormData(e.target);
+      const postXhr = new XMLHttpRequest();
+      postXhr.responseType = 'json';
+      postXhr.open(postMethod, postUrl);
+      postXhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest") //this methods to allow ajax not to cause reload
+      postXhr.setRequestHeader("X-Requested-With", "XMLHttpRequest") //this methods to allow ajax not to cause reload
+      postXhr.onload = function() {
+        console.log(postXhr.response)
+        // loadData(); //my preferred method
+        // but thos method belows looks 'faster' evn tho it's same speed , it just appears in a logical way that the frontend works not caring about the ajax request which delays it.
+        const newTweetElement = htmlSnippet(postXhr.response.post, postXhr.response.like);
+        tweetEl.innerHTML = newTweetElement + tweetEl.innerHTML;
+      }
+      postXhr.send(formData);
+      e.target.reset();
+      // postXhr.onerror = function{} this is a snippet for writing an error logic on xhr. justin did the codes but i cant, much work
+      // but from his explanation, there are basically two main types of error in such a scenerio.
+      // 1) A 'Xhr' type 
+      // 2) A 'normal django type of error'
+
+      // the first happens when there is an issue with the xhr connection, remember it has to open a connection,
+      // load that connection, get a response 
+      // and sends a request to complete that connection...
+
+      // when there is an interference in those steps , that results to an 'xhr' error and thus the method of 'onerror'
+      // will be a good place to put some logic.. also servers issue resulting from a mistake in backend can contribute to these errors
+
+
+      // ---
+      // the normal django errors are stuff like passwords mismatch, field validation, stuff like that..
+
+      // generally you can also say
+      // 'XHR' errors = connection error
+      // django errors = debugging errors, consumer errors, security errors....e.t.c
+    }
+
+
+
+    </script>
+  </body>
+</html>
