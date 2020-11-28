@@ -18,7 +18,7 @@ def home_Api_View(request):
         ]
     '''
     
-    data_list = [{'id':i.id, 'post':i.post, 'like':i.like} for i in posts]
+    data_list = [i.serializer() for i in posts]
     data ={
         'data_list' : data_list
     }
@@ -30,8 +30,10 @@ def home_view(request):
     if(request.method == 'POST'):
         tweetForm = TweetForm(request.POST or None)
         if tweetForm.is_valid():
-            tweetForm.save(commit=False)
-            tweetForm.save()
+            obj=tweetForm.save(commit=False)
+            obj.save()
+            if request.is_ajax():
+                return JsonResponse(obj.serialzer(), status=201)
     tweetForm = TweetForm()
     return render(request, 'xhr_APP/home.html', {})
 
@@ -40,10 +42,10 @@ def tweet_create_view(request):
     if(request.method == 'POST'):
         tweetForm = TweetForm(request.POST or None)
         if tweetForm.is_valid():
-            tweetForm.save(commit=False)
-            tweetForm.save()
+            obj = tweetForm.save(commit=False)
+            obj.save()
             if request.is_ajax():
-                return JsonResponse({}, status=201)
+                return JsonResponse(obj.serializer(), status=201) #with this serializer method giving us access to Json containing our data, we can then use the 'appending to tweetList' which is more faster than reloading tweetList all the time
             return redirect('/xhr')
     tweetForm = TweetForm()
     return render(request, 'xhr_APP/create_form.html', {"tweetForm":tweetForm})

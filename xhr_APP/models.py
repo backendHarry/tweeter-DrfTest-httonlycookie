@@ -12,4 +12,13 @@ class TweetPost(models.Model):
     class Meta:
         ordering = ["-id"]
 
+    # serializing the data to make it clean rather than the dictionary of {'post':...}
+
+    def serializer(self):
+        return {
+            'id':self.id,
+            'post':self.post,
+            'like':self.like
+        }
+
         

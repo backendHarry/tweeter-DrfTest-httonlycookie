@@ -221,7 +221,7 @@
       // 3) response
       // 4) send
 
-    const tweetEl = document.querySelector('.tweets');
+    var tweetEl = document.querySelector('.tweets');
 
     function loadData(){
       const method ="GET";
@@ -262,10 +262,32 @@
       postXhr.setRequestHeader("X-Requested-With", "XMLHttpRequest") //this methods to allow ajax not to cause reload
       postXhr.onload = function() {
         console.log(postXhr.response)
-        loadData();
+        // loadData(); //my preferred method
+        // but thos method belows looks 'faster' evn tho it's same speed , it just appears in a logical way that the frontend works not caring about the ajax request which delays it.
+        const newTweetElement = htmlSnippet(postXhr.response.post, postXhr.response.like);
+        tweetEl.innerHTML = newTweetElement + tweetEl.innerHTML;
       }
       postXhr.send(formData);
       e.target.reset();
+      // postXhr.onerror = function{} this is a snippet for writing an error logic on xhr. justin did the codes but i cant, much work
+      // but from his explanation, there are basically two main types of error in such a scenerio.
+      // 1) A 'Xhr' type 
+      // 2) A 'normal django type of error'
+
+      // the first happens when there is an issue with the xhr connection, remember it has to open a connection,
+      // load that connection, get a response 
+      // and sends a request to complete that connection...
+
+      // when there is an interference in those steps , that results to an 'xhr' error and thus the method of 'onerror'
+      // will be a good place to put some logic.. also servers issue resulting from a mistake in backend can contribute to these errors
+
+
+      // ---
+      // the normal django errors are stuff like passwords mismatch, field validation, stuff like that..
+
+      // generally you can also say
+      // 'XHR' errors = connection error
+      // django errors = debugging errors, consumer errors, security errors....e.t.c
     }
 
 
