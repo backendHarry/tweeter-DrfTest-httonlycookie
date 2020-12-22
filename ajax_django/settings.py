@@ -42,10 +42,13 @@ INSTALLED_APPS = [
 
     #third package
     'rest_framework',
+    'knox',
 
     #custom Apps
     'xhr_APP',
     'Django_Rest_Framework',
+    'accounts',
+    'AuthFrontend',
 ]
 
 MIDDLEWARE = [
@@ -141,9 +144,9 @@ if DEBUG:
     ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES':[
-        'rest_framework.authentication.SessionAuthentication'
-    ],
+    'DEFAULT_AUTHENTICATION_CLASSES':(
+        'knox.auth.TokenAuthentication',
+    ),
     'DEFAULT_RENDERER_CLASSES': DEFAULT_RENDERER_CLASSES,
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
@@ -152,4 +155,6 @@ REST_FRAMEWORK = {
 }
 
 
-
+# 'DEFAULT_AUTHENTICATION_CLASSES':('knox.auth.TokenAuthentication',),
+# 'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',

@@ -112,6 +112,7 @@ P.S i will be sending the Id through js.
 @api_view(['POST'])
 def handleLike(request, *args, **kwargs):
     serializer = TweetLikeSerializer(data=request.data)
+    print(request.user)
     if serializer.is_valid():
         data_id = serializer.validated_data.get('id') #instead of forms.cleaned_data
         obj = TweetPostDrf.objects.get(id=data_id)
