@@ -21,6 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('vanillaApi/', include('xhr_APP.urls')),
     path('DrfApi/', include('Django_Rest_Framework.urls')),
-    path('accounts/Api', include('accounts.urls')),
+    path('accounts/Api/', include('accounts.urls')),
     path('accounts/', include('AuthFrontend.urls')),
 ]

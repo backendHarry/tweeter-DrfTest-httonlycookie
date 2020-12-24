@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+
+</head>
+
+<style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    .center-me {
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      flex-direction: column;
+      width:50vw;
+      height:50vh;
+      position:absolute;
+      top:50%;
+      left:50%;
+      transform:translate(-50%, -50%);
+    }
+
+    .loginForm{
+      display:flex;
+      flex-direction:column;
+      height:80%;
+    }
+
+    .loginForm input{
+      margin:0rem 0 1rem 0;
+      width:100%;
+
+    }
+</style>
+<body>
+    <section class="center-me">
+      <H1> Login </H1>
+        <form method="POST" class="loginForm">
+            <input type="text" name="username" class="username" placeholder="username"/>
+            <input type="password" name="password"  class="password" placeholder="password" />
+            <button type="submit">submit</button>
+        </form>
+    </section>
+
+
+    <script>
+
+         // COOKIE FOR CSRF DJANGO+JS
+//     function getCookie(name) {
+//       let cookieValue = null;
+//       if (document.cookie && document.cookie !== '') {
+//           const cookies = document.cookie.split(';');
+//           for (let i = 0; i < cookies.length; i++) {
+//               const cookie = cookies[i].trim();
+//               // Does this cookie string begin with the name we want?
+//               if (cookie.substring(0, name.length + 1) === (name + '=')) {
+//                   cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+//                   break;
+//               }
+//           }
+//       }
+//       return cookieValue;
+//   }
+//   const csrftoken = getCookie('csrftoken');
+
+        // open connection
+        // onload <logic , adding token to localstorage>
+        // send form data
+
+    const loginForm = document.querySelector('.loginForm');
+    loginForm.addEventListener('submit', handleSubmit);
+    function handleSubmit(e){
+      e.preventDefault();
+      const username = document.querySelector('.username').value
+      const password = document.querySelector('.password').value
+      const formData = JSON.stringify({'username':username, 'password':password})
+      const postMethod = e.target.getAttribute('method');
+      const postUrl = '/accounts/Api/login/';
+      const postXhr = new XMLHttpRequest();
+      postXhr.responseType = 'json';
+      postXhr.open(postMethod, postUrl);
+      postXhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest") 
+      postXhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+      postXhr.setRequestHeader("content-type", "application/json")
+      postXhr.onload = function() {
+        localStorage.setItem('token', postXhr.response.token)
+        localStorage.setItem('name', postXhr.response.user.username)
+      }
+      postXhr.send(formData);
+      e.target.reset();
+    }
+
+
+    </script>
+</body>
+</html>

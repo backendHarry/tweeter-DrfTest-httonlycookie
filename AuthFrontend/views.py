@@ -3,5 +3,8 @@ from django.shortcuts import render
 # Create your views here.
 
 
-def templateView(request, *args, **kwargs):
+def templateRegisterView(request, *args, **kwargs):
     return render(request, 'AuthFrontend/account_create.html')
+
+def templateLoginView(request, *args, **kwargs):
+    return render(request, 'AuthFrontend/account_login.html')

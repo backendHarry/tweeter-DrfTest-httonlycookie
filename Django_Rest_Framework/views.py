@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from .models import TweetPostDrf
 
-from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.decorators import api_view, renderer_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+
 
 from .serializers import TweetPostSerializer, TweetLikeSerializer
 from .renderers import DataRenderer
@@ -22,8 +24,11 @@ def templateView(request):
 #create view both cbv and fbv
 class CreateView(generics.CreateAPIView):
     serializer_class = TweetPostSerializer
+    permission_classes = [IsAuthenticated]
+
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])   
 # @renderer_classes([DataRenderer])  #renderers are used to affect the way you see data .
 def createView(request, *args, **kwargs):
     serializer = TweetPostSerializer(data=request.data)
@@ -63,7 +68,9 @@ def apiIndexView(request):
 
 
 #update view for fbv and cbv
+
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def updateView(request, id):
     #we fetch the db for the id/pk. and we can get use the "get_object_or_404" but we want react to handle everything
     try:
@@ -79,12 +86,14 @@ def updateView(request, id):
 
 class UpdateView(generics.UpdateAPIView):
     serializer_class = TweetPostSerializer
+    permission_classes = [IsAuthenticated]
     lookup_field= 'pk'
     queryset = TweetPostDrf.objects.all()
 
 
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def deleteView(request, id):
     try:
         obj = TweetPostDrf.objects.get(id=id)
@@ -95,6 +104,7 @@ def deleteView(request, id):
 
 
 class DeleteView(generics.DestroyAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = TweetPostDrf.objects.all()
     lookup_field = 'pk'
     
@@ -110,7 +120,9 @@ P.S i will be sending the Id through js.
 '''
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def handleLike(request, *args, **kwargs):
+    print(request.user)
     serializer = TweetLikeSerializer(data=request.data)
     print(request.user)
     if serializer.is_valid():
