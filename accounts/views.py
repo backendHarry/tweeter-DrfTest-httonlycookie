@@ -34,7 +34,3 @@ class LoginView(generics.GenericAPIView):
             "token":AuthToken.objects.create(user)[1]},
         status=status.HTTP_200_OK
         )
-
-
-
-# 3e8b66ea7b061e1797e8c460ce7b41aff135634cf265f4c01ebd3b2579e847bf
