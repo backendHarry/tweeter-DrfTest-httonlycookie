@@ -1,14 +1,14 @@
 # tweeter-DrfTest-httonlycookie
 A tweeter clone build off of django, django rest framework with a httponly cookie application
 
-#Stacks
+# Stacks
 
 1) Django 
 2) Django Rest Framework
 3) Vanilla js
 4) XML for Ajax
 
-#Story
+# Story
 
 story behind was to learn the DRF processes and how to build scalable apps(web and mobile) with it.
 And i followed a course on building a "tweeter(twitter) clone app" from one of my best youtube tutour on django, Justin from codingforentrepreneurs(CFE).
@@ -19,7 +19,7 @@ And while building it, i decided to add an extra feature concerning security on 
 Thanks to Justin Mitch from CFE and to Brad as well!!...
 
 
-##Little info on httponly cookie with django, Drf and token auth...
+## Little info on httponly cookie with django, Drf and token auth...
 
 ** Django takes in user data.
 ** Authenticates to see if its valid and correct.
@@ -28,5 +28,6 @@ Thanks to Justin Mitch from CFE and to Brad as well!!...
 ** allow the server handle the authorization process since js can't.
 ** create a middleware to handle this as a middle man setting the headers before being passed on to the server completely.
 
-
+follow me on twitter at https://twitter.com/Coding_mine
+follow me on linkedin at https://www.linkedin.com/in/osagiede-harrison-2593b2202/
 ## More on the codes!!!...
