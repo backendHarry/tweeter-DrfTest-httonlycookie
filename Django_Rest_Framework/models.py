@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 class TweetPostDrf(models.Model):
     post = models.CharField(max_length=200)
     likes = models.ManyToManyField(User, through='TweetLike', blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name = 'postUser')
 
     def __str__(self):
         return self.post

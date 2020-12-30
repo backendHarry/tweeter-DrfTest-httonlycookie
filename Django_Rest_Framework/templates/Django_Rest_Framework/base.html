@@ -154,7 +154,7 @@
     </header>
 
     <div class="container posts-section">
-      <form class="tweetForm" method="POST" action="/DrfApi/post/">{% csrf_token %}
+      <form class="tweetForm" method="POST" action="/DrfApi/post/">
         <textarea
           name="post"
           placeholder="tweet something"
@@ -198,7 +198,7 @@
       // or use the innerhtml to write that snippet
 
 
-      // COOKIE FOR CSRF DJANGO+JS
+      // COOKIE FOR CSRF DJANGO+JS To as well prevent csrf attacks, can be disabled if wanted
     function getCookie(name) {
       let cookieValue = null;
       if (document.cookie && document.cookie !== '') {
@@ -257,6 +257,7 @@
           tweetEl.innerHTML = finalHtml;
         }  //the loop handles its own logic of having a tweet and adding to the previous tweets..
       }   //if you had written this logic in the same function for generating html "htmlSnippet()" it will work for creating a new tweet but wont reload coz it will stay on the stack without being removed , hence it will always think of creating instead of acting as a function that reloads as well.
+      xhr.withCredentials = true
       xhr.send();
     }
 
@@ -273,19 +274,27 @@
       e.preventDefault();
       const postMethod = e.target.getAttribute('method');
       const postUrl = e.target.getAttribute('action');
-      const formData = new FormData(e.target);
+      const postField = tweetForm.querySelector('textarea').value
+      const data = JSON.stringify({
+          post:postField,
+          'likes':0
+      })
       const postXhr = new XMLHttpRequest();
       postXhr.responseType = 'json';
       postXhr.open(postMethod, postUrl);
       postXhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest") //this methods to allow ajax not to cause reload
       postXhr.setRequestHeader("X-Requested-With", "XMLHttpRequest") //this methods to allow ajax not to cause reload
+      postXhr.setRequestHeader("content-type", "application/json")
+      postXhr.withCredentials = true
+      postXhr.setRequestHeader('X-CSRFToken', csrftoken);
       postXhr.onload = function() {
         // loadData(); //my preferred method
         // but thos method belows looks 'faster' evn tho it's same speed , it just appears in a logical way that the frontend works not caring about the ajax request which delays it.
         const newTweetElement = htmlSnippet(postXhr.response.post, postXhr.response.likes, postXhr.response.id);
         tweetEl.innerHTML = newTweetElement + tweetEl.innerHTML;
+        console.log('response', postXhr.response)
       }
-      postXhr.send(formData);
+      postXhr.send(data);
       e.target.reset();
       // postXhr.onerror = function{} this is a snippet for writing an error logic on xhr. justin did the codes but i cant, much work
       // but from his explanation, there are basically two main types of error in such a scenerio.
@@ -316,7 +325,11 @@
         const xhr = new XMLHttpRequest();
         xhr.responseType = responseType;
         xhr.open(method, url);
+        xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+        xhr.setRequestHeader("content-type", "application/json")
         xhr.setRequestHeader('X-CSRFToken', csrftoken);
+        xhr.withCredentials = true
         xhr.onload = function (){
           // you can send a confirmation text to the user but i will skip that
           // also found a bug , the last deletes but doesnt leave the tweets screen so maybe fix the loadData Function
@@ -338,6 +351,7 @@
         xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
         xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
         xhr.setRequestHeader("content-type", "application/json")
+        xhr.withCredentials = true
         xhr.setRequestHeader('X-CSRFToken', csrftoken);
         xhr.onload = function(){
           loadData();
@@ -345,8 +359,7 @@
         xhr.send(data);
       }
 
-
-
+      
     </script>
   </body>
 </html>
