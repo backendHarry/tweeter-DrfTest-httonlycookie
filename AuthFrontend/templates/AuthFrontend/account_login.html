@@ -92,7 +92,6 @@
       postXhr.setRequestHeader("content-type", "application/json")
       postXhr.onload = function() {
         localStorage.setItem('token', postXhr.response.token)
-        localStorage.setItem('name', postXhr.response.user.username)
       }
       postXhr.send(formData);
       e.target.reset();

@@ -17,8 +17,7 @@ class RegisterView(generics.GenericAPIView):
         serializer.is_valid()
         user = serializer.save()
         return Response({
-            "user":UserSerializer(user, context=self.get_serializer_context()).data,
-            "token":AuthToken.objects.create(user)[1]},
+            "user":UserSerializer(user, context=self.get_serializer_context()).data},
         status=status.HTTP_201_CREATED
         )
 
@@ -29,8 +28,11 @@ class LoginView(generics.GenericAPIView):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid()
         user = serializer.validated_data
-        return Response({
+        token = AuthToken.objects.create(user)[1]
+        myResponse = Response({
             "user":UserSerializer(user, context=self.get_serializer_context()).data,
-            "token":AuthToken.objects.create(user)[1]},
+            "token": token},
         status=status.HTTP_200_OK
         )
+        myResponse.set_cookie(key="token", value=token, httponly=True)
+        return myResponse
