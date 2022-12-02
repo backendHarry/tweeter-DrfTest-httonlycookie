@@ -156,7 +156,7 @@ class DeleteView(generics.DestroyAPIView):
 
 #handle like method
 '''
-the like cant have a url lookup that gets the post id, so i will have to get yhe id from the post itself.
+the like cant have a url lookup that gets the post id, so i will have to get the id from the post itself.
 and its a post form, when the user clicks on the button it should send a post data which i will use in getting the id,  and will have to create a new serializer coz the old one helps creating a post which i'm not creating.
 P.S i will be sending the Id through js.
 '''
